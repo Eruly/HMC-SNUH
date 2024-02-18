@@ -1,55 +1,19 @@
+[tool.poetry]
+name = "hmc-snuh"
+version = "0.1.0"
+description = ""
+authors = ["baruda <maider030@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.4"
+kaggle = "^1.6.6"
+pandas = "^2.2.0"
+
+[tool.poetry.dev-dependencies]
+torch = {url = "https://download.pytorch.org/whl/cu121_pypi_cudnn/torch-2.1.0%2Bcu121.with.pypi.cudnn-cp310-cp310-linux_x86_64.whl#sha256=948aa4ce86a8644be7667a1f8b78de6bd5f3301f555dc57f72269fcc68c2fe19"}
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
-name = "paper"
-version = "0.0.1"
-description = "Paper - Pytorch"
-license = "MIT"
-authors = ["DokyoonYoon <maider030@gmail.com>"]
-homepage = "https://github.com/YOON-LLM/paper"
-documentation = "https://github.com/YOON-LLM/paper"  # Add this if you have documentation.
-readme = "README.md"  # Assuming you have a README.md
-repository = "https://github.com/YOON-LLM/paper"
-keywords = ["artificial intelligence", "deep learning", "optimizers"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.9"
-]
-
-[tool.poetry.dependencies]
-python = "^3.6"
-
-[tool.poetry.dev-dependencies]
-# Add development dependencies here
-
-
-[tool.poetry.group.lint.dependencies]
-ruff = "^0.1.6"
-types-toml = "^0.10.8.1"
-types-redis = "^4.3.21.6"
-types-pytz = "^2023.3.0.0"
-black = "^23.1.0"
-types-chardet = "^5.0.4.6"
-mypy-protobuf = "^3.0.0"
-
-
-[tool.autopep8]
-max_line_length = 80
-ignore = "E501,W6"  # or ["E501", "W6"]
-in-place = true
-recursive = true
-aggressive = 3
-
-
-[tool.ruff]
-line-length = 70
-
-[tool.black]
-line-length = 70
-target-version = ['py38']
-preview = true
