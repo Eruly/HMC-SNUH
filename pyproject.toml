@@ -24,6 +24,7 @@ torch = {url = "https://download.pytorch.org/whl/cu121_pypi_cudnn/torch-2.1.0%2B
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.2"
+pytest = "^8.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
