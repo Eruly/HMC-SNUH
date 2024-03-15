@@ -18,13 +18,19 @@ albumentations = "^1.4.0"
 hydra-core = "^1.3.2"
 tsfm-public = {git = "https://github.com/IBM/tsfm.git"}
 transformers = {git = "https://github.com/huggingface/transformers.git"}
-
-[tool.poetry.dev-dependencies]
-torch = {url = "https://download.pytorch.org/whl/cu121_pypi_cudnn/torch-2.1.0%2Bcu121.with.pypi.cudnn-cp310-cp310-linux_x86_64.whl#sha256=948aa4ce86a8644be7667a1f8b78de6bd5f3301f555dc57f72269fcc68c2fe19"}
+datasets = "^2.17.1"
+torchvision = "^0.17.1"
+timm = "^0.9.16"
+lightning = "^2.2.1"
+lightning-bolts = "^0.7.0"
+neuralforecast = {git = "https://github.com/maxpumperla/neuralforecast.git"}
+mamba = "^0.11.3"
+packaging = "^24.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.2"
 pytest = "^8.0.1"
+wandb = "^0.16.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

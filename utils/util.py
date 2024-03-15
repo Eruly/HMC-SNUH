@@ -2,12 +2,26 @@ import math
 import time
 import pandas as pd
 import numpy as np
+import typing as tp
 import matplotlib.pyplot as plt
 import random
 import torch
 import os
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
+CLASSES = ["seizure_vote", "lpd_vote", "gpd_vote", "lrda_vote", "grda_vote", "other_vote"]
 eeg_features = ['Fp1','T3','C3','O1','Fp2','C4','T4','O2']
+
+from pathlib import Path
+ROOT = Path.cwd()
+TMP = ROOT / "tmp"
+TRAIN_SPEC_SPLIT = TMP / "train_spectrograms_split"
+TEST_SPEC_SPLIT = TMP / "test_spectrograms_split"
+
+TMP.mkdir(exist_ok=True)
+TRAIN_SPEC_SPLIT.mkdir(exist_ok=True)
+TEST_SPEC_SPLIT.mkdir(exist_ok=True)
 
 class paths:
     OUTPUT_DIR = "." # "/kaggle/working/"
@@ -120,3 +134,58 @@ def butter_lowpass_filter(data, cutoff_freq: int = 20, sampling_rate: int = 200,
     b, a = butter(order, normal_cutoff, btype='low', analog=False)
     filtered_data = lfilter(b, a, data, axis=0)
     return filtered_data
+
+
+def set_random_seed(seed: int = 42, deterministic: bool = False):
+    """Set seeds"""
+    random.seed(seed)
+    np.random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)  # type: ignore
+    torch.backends.cudnn.deterministic = deterministic  # type: ignore
+    
+def to_device(
+    tensors: tp.Union[tp.Tuple[torch.Tensor], tp.Dict[str, torch.Tensor]],
+    device: torch.device, *args, **kwargs
+):
+    if isinstance(tensors, tuple):
+        return (t.to(device, *args, **kwargs) for t in tensors)
+    elif isinstance(tensors, dict):
+        return {
+            k: t.to(device, *args, **kwargs) for k, t in tensors.items()}
+    else:
+        return tensors.to(device, *args, **kwargs)
+    
+def get_path_label(val_fold, train_all: pd.DataFrame):
+    """Get file path and target info."""
+    
+    train_idx = train_all[train_all["fold"] != val_fold].index.values
+    val_idx   = train_all[train_all["fold"] == val_fold].index.values
+    img_paths = []
+    labels = train_all[CLASSES].values
+    for label_id in train_all["label_id"].values:
+        img_path = TRAIN_SPEC_SPLIT / f"{label_id}.npy"
+        img_paths.append(img_path)
+
+    train_data = {
+        "image_paths": [img_paths[idx] for idx in train_idx],
+        "labels": [labels[idx].astype("float32") for idx in train_idx]}
+
+    val_data = {
+        "image_paths": [img_paths[idx] for idx in val_idx],
+        "labels": [labels[idx].astype("float32") for idx in val_idx]}
+    
+    return train_data, val_data, train_idx, val_idx
+
+
+def get_transforms(CFG):
+    train_transform = A.Compose([
+        A.Resize(p=1.0, height=CFG.img_size, width=CFG.img_size),
+        ToTensorV2(p=1.0)
+    ])
+    val_transform = A.Compose([
+        A.Resize(p=1.0, height=CFG.img_size, width=CFG.img_size),
+        ToTensorV2(p=1.0)
+    ])
+    return train_transform, val_transform
